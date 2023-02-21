@@ -32,13 +32,14 @@ function Company() {
 
     const auth = useSelector(state => state.auth)
 
-    const config = {
-        headers: {Authorization: `Bearer ${auth.userToken}`}
+    const headers = (token) => {
+        return { headers: {Authorization: `Bearer ${token}`}}
     }
 
     const initialCompany = { name: '', direction: '', nit: '', phoneNumber: '' }
     const initialArticle = { name: ''}
 
+    const [header, setHeader] = useState(headers(auth.userToken))
     const [companies, setCompanies] = useState([]);
     const [company, setCompany] = useState(initialCompany)
     const [disable, setDisable] = useState(false)
@@ -48,12 +49,11 @@ function Company() {
 
     useEffect(() => {
         getAllCompanies()
-
     }, [])
 
     const getAllCompanies = async () => {
         try {
-            await axios.get(`${API_URL}company`, config).then(res => setCompanies(res.data))
+            await axios.get(`${API_URL}company`, header).then(res => setCompanies(res.data))
         } catch (e) {
 
         }
@@ -86,7 +86,7 @@ function Company() {
     const createCompany = async () => {
         try {
             if (!disable) {
-                await axios.post(`${API_URL}company`, company, config).then(res => {
+                await axios.post(`${API_URL}company`, company, header).then(res => {
                     const data = res.data
                     setCompanies(res => [...res, data])
                 })
@@ -94,7 +94,7 @@ function Company() {
                 const nit = company.nit
                 delete company.nit
                 setCompany(company)
-                await axios.patch(`${API_URL}company/${nit}`, company, config).then(res => {
+                await axios.patch(`${API_URL}company/${nit}`, company, header).then(res => {
                     const arr = [...companies]
                     const index = arr.findIndex(item => item.nit === nit)
                     arr[index] = res.data
@@ -110,7 +110,7 @@ function Company() {
 
     const toEditCompany = async (nit) => {
         try {
-            await axios.get(`${API_URL}company/${nit}`, company, config).then(res => {
+            await axios.get(`${API_URL}company/${nit}`, header).then(res => {
                 setCompany(res.data)
                 setDisable(true)
             })
@@ -125,7 +125,7 @@ function Company() {
                 companyId,
                 ...article
             }
-            await axios.post(`${API_URL}articles`, body, config).then(res => {
+            await axios.post(`${API_URL}articles`, body, header).then(res => {
                 setArticles(articles => [...articles, res.data])
                 setArticle(initialArticle)
             })
@@ -136,7 +136,7 @@ function Company() {
 
     const deleteCompany = async (nit) => {
         try {
-            await axios.delete(`${API_URL}company/${nit}`, config).then(res => {
+            await axios.delete(`${API_URL}company/${nit}`, header).then(res => {
                 if(res.data){
                     const arr = [...companies]
                     const arrIndex = arr.findIndex(item => item.nit === nit)
@@ -159,7 +159,7 @@ function Company() {
 
     const getAllArticles = async (id) => {
         try {
-            await axios.get(`${API_URL}articles/${id}`, config).then(res => setArticles(res.data))
+            await axios.get(`${API_URL}articles/${id}`, header).then(res => setArticles(res.data))
         } catch (e) {
 
         }
@@ -167,7 +167,7 @@ function Company() {
 
     const deleteArticle = async (id) => {
         try {
-            await axios.delete(`${API_URL}articles/${id}`, config).then(res => {
+            await axios.delete(`${API_URL}articles/${id}`, header).then(res => {
                 const arr = [...articles]
                 const arrIndex = arr.findIndex(item => item.id === id)
                 arr.splice(arrIndex, 1)
@@ -188,56 +188,57 @@ function Company() {
     return (
         <>
             <Menu/>
-            <div>
-                <h3>Crear una empresas</h3>
-
-            </div>
-            <Container fixed>
-
-
-                <form onSubmit={handleSubmit}>
-                    <TextField
-                        label="Name"
-                        id="outlined-size-small"
-                        size="small"
-                        name='name'
-                        onChange={handleChange}
-                        value={company.name}
-                    />
-                    <TextField
-                        label="Direction"
-                        id="outlined-size-small"
-                        size="small"
-                        name='direction'
-                        onChange={handleChange}
-                        value={company.direction}
-                    />
-                    <TextField
-                        label="NIT"
-                        id="outlined-size-small"
-                        size="small"
-                        name='nit'
-                        onChange={handleChange}
-                        disabled={disable}
-                        value={company.nit}
-                    />
-                    <TextField
-                        label="Phone number"
-                        id="outlined-size-small"
-                        size="small"
-                        name='phoneNumber'
-                        onChange={handleChange}
-                        value={company.phoneNumber}
-                    />
-                    <Button type='submit' variant="contained">Save</Button>
-                </form>
-            </Container>
-
             {
-                companies.length <= 0 ? <h1>Not found</h1>
+                auth.userInfo.role === '1' ?
+
+                <>
+                    <h3>Create a company</h3>
+                    <Container fixed>
+                        <form onSubmit={handleSubmit}>
+                            <TextField
+                                label="Name"
+                                id="outlined-size-small"
+                                size="small"
+                                name='name'
+                                onChange={handleChange}
+                                value={company.name}
+                            />
+                            <TextField
+                                label="Direction"
+                                id="outlined-size-small"
+                                size="small"
+                                name='direction'
+                                onChange={handleChange}
+                                value={company.direction}
+                            />
+                            <TextField
+                                label="NIT"
+                                id="outlined-size-small"
+                                size="small"
+                                name='nit'
+                                onChange={handleChange}
+                                disabled={disable}
+                                value={company.nit}
+                            />
+                            <TextField
+                                label="Phone number"
+                                id="outlined-size-small"
+                                size="small"
+                                name='phoneNumber'
+                                onChange={handleChange}
+                                value={company.phoneNumber}
+                            />
+                            <Button type='submit' variant="contained">Save</Button>
+                        </form>
+                    </Container>
+                </>
+                : null
+            }
+            {
+                companies.length <= 0 ? <h3>No companies found</h3>
                     :
                     <>
-                        <h3>Listado de Empresas</h3>
+                        <h3>List of companies</h3>
                         <TableContainer component={Paper}>
                             <Table sx={{minWidth: 200, padding: "18%"}} aria-label="simple table">
                                 <TableHead>
@@ -262,18 +263,21 @@ function Company() {
                                                 <TableCell align="right">{c.direction}</TableCell>
                                                 <TableCell align="right">{c.nit}</TableCell>
                                                 <TableCell align="right">{c.phoneNumber}</TableCell>
-                                                {auth.userInfo?.role === "1" ?
-                                                    <TableCell align="right">
-                                                        <Button onClick={() => handleClickOpen(c.nit)}
-                                                                style={{background: "green"}} variant="contained"
-                                                                endIcon={<AddIcon/>}>Article</Button>
-                                                        <Button onClick={() => toEditCompany(c.nit)} variant="contained"
+
+                                                <TableCell align="right">
+                                                    <Button onClick={() => handleClickOpen(c.nit)}
+                                                            style={{background: "green"}} variant="contained"
+                                                            endIcon={<AddIcon/>}>Article</Button>
+                                                    {
+                                                        auth.userInfo.role === "1" ?
+                                                        <><Button onClick={() => toEditCompany(c.nit)} variant="contained"
                                                                 endIcon={<EditIcon/>}>Edit</Button>
                                                         <Button onClick={() => deleteCompany(c.nit)}
                                                                 style={{background: "red"}} variant="contained"
-                                                                endIcon={<DeleteIcon/>}>Delete</Button>
-                                                    </TableCell> : null
-                                                }
+                                                                endIcon={<DeleteIcon/>}>Delete</Button></>
+                                                        : null
+                                                    }
+                                                </TableCell>
 
                                             </TableRow>
                                         ))
@@ -291,7 +295,7 @@ function Company() {
                 open={open}
             >
                 <DialogTitle>
-                    Add article
+                    List articles
                         <IconButton
                             sx={{
                                 position: 'absolute',
@@ -304,19 +308,23 @@ function Company() {
                 </DialogTitle>
                 <DialogContent dividers>
                     <Typography gutterBottom>
-                        <form onSubmit={handleSubmit2}>
-                            <TextField
-                                label="Name"
-                                id="outlined-size-small"
-                                size="small"
-                                name='name'
-                                onChange={handleChange2}
-                                value={article.name}
-                            />
-                            <Button type='submit' variant="contained">Save</Button>
-                        </form>
+                        {
+                            auth.userInfo.role === "1" ?
+                                <form onSubmit={handleSubmit2}>
+                                    <TextField
+                                        label="Name"
+                                        id="outlined-size-small"
+                                        size="small"
+                                        name='name'
+                                        onChange={handleChange2}
+                                        value={article.name}
+                                    />
+                                    <Button type='submit' variant="contained">Save</Button>
+                                </form>
+                                : null
+                        }
 
-                        <List sx={{ left: "5px", width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                        <List sx={{ left: "5px", width: "300px", bgcolor: 'background.paper' }}>
                             {
                                 articles.map((article) => {
 
@@ -325,9 +333,12 @@ function Company() {
                                         key={article.id}
                                         disableGutters
                                         secondaryAction={
-                                            <IconButton onClick={() => deleteArticle(article.id)} aria-label="comment">
-                                                <DeleteIcon />
-                                            </IconButton>
+                                            auth.userInfo.role === '1' ?
+                                                <IconButton
+                                                            onClick={() => deleteArticle(article.id)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            : null
                                         }
                                     >
                                         <ListItemText primary={article.name} />
