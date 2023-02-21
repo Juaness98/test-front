@@ -2,6 +2,7 @@
   "name": "technical-test",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://juaness98.github.io/test-front",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -32,6 +33,8 @@
     "uuid": "^9.0.0"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

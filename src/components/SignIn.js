@@ -16,7 +16,7 @@ import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Error from "./Error";
 
-const API_URL = 'http://localhost:3001/users/';
+const API_URL = 'https://test-back-liao.onrender.com/users/';
 
 const theme = createTheme();
 

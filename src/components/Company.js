@@ -26,7 +26,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 
-const API_URL = 'http://localhost:3001/';
+const API_URL = 'https://test-back-liao.onrender.com/';
 
 function Company() {
 

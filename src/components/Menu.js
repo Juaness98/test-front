@@ -15,7 +15,7 @@ function Menu() {
 
     const changeState = () => {
         dispatch(closeAuth())
-        navigate('/')
+        navigate('/test-front')
     }
 
     return (

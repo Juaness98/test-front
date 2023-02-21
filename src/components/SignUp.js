@@ -15,7 +15,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {InputLabel, MenuItem, Select} from "@mui/material";
 import axios from "axios";
 
-const API_URL = 'http://localhost:3001/users/';
+const API_URL = 'https://test-back-liao.onrender.com/users/';
 
 export default function SignUp() {
 
@@ -44,7 +44,7 @@ export default function SignUp() {
     const handleSubmit = (e) => {
         e.preventDefault()
         signUp().then(res => dispatch(createUser(res)))
-        navigate('/')
+        navigate('/test-front')
     }
 
     return (
