@@ -1,9 +1,9 @@
 {
   "files": {
-    "main.css": "/test-front/static/css/main.31d6cfe0.css",
-    "main.js": "/test-front/static/js/main.2f42c90b.js",
-    "index.html": "/test-front/index.html",
-    "main.2f42c90b.js.map": "/test-front/static/js/main.2f42c90b.js.map"
+    "main.css": "/static/css/main.31d6cfe0.css",
+    "main.js": "/static/js/main.2f42c90b.js",
+    "index.html": "/index.html",
+    "main.2f42c90b.js.map": "/static/js/main.2f42c90b.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
