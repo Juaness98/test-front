@@ -2,7 +2,7 @@
   "name": "technical-test",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Juaness98.github.io/test-technical",
+  "homepage": "https://Juaness98.github.io/test-front",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
